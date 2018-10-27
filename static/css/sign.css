@@ -1,0 +1,65 @@
+body{
+    background-color: #2f4050;
+    margin: 0;
+}
+a{
+    text-decoration: none;
+}
+.login{
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+.inOrUp{
+    margin: 10px 0;
+    height: 30px;
+}
+.inOrUp a{
+    line-height: 30px;
+    margin-right: 30px;
+    color: #fff;
+    font-size: 16px;
+    float: right;
+}
+.sign{
+    width: 350px;
+    margin: 150px auto 0;
+    background-color: #fff;
+    position: relative;
+    padding: 120px 10px 20px;
+}
+.sign .login_wrap .avatar{
+    position: absolute;
+    width: 140px;
+    height: 140px;
+    overflow: hidden;
+    border: 10px solid #fff;
+    box-shadow: 0 1px 5px #ccc;
+    -webkit-border-radius: 50%;
+    -moz-border-radius: 50%;
+    border-radius: 50%;
+    top: -20%;
+    left: 50%;
+    -webkit-transform: translateX(-50%);
+    -moz-transform: translateX(-50%);
+    -ms-transform: translateX(-50%);
+    -o-transform: translateX(-50%);
+    transform: translateX(-50%);
+}
+.form_group input{
+    width: 80%;
+    height: 20px;
+    display: block;
+    margin: 15px auto;
+    outline: none;
+    padding: 5px;
+}
+.form_group .btn{
+    width: 81%;
+    height: 35px;
+    border: 1px solid #2f4050;
+    border-radius: 10px;
+    background-color: #2f4050;
+    color: #fff;
+    cursor: pointer;
+}

@@ -1,0 +1,97 @@
+
+.form-inline{
+    display: inline-block;
+}
+.page-action{
+    width: 100%;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    position: relative;
+}
+.page-action .delete-btn{
+    display: inline-block;
+    font-size: 12px;
+    border: 1px solid #d43f3a;
+    border-radius: 3px;
+    padding: 5px 10px;
+    background-color: #d9534f;
+    color: #fff;
+    margin-right: 10px;
+}
+.page-action .form-inline select{
+    padding: 5px 10px;
+    vertical-align: middle;
+    line-height: 30px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #555;
+    border: 1px solid #ccc;
+}
+.page-action .form-inline input{
+    padding: 5px;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    outline: none;
+    border: 1px solid #ccc;
+}
+.page-action .form-inline button{
+    padding: 5px 10px;
+    vertical-align: middle;
+    border-radius: 3px;
+    font-size: 12px;
+    color: #555;
+    border: 1px solid #ccc;
+    background-color: #fff;
+}
+.pagination{
+    display: inline-block;
+    position: absolute;
+    right: 20px;
+    margin: 0;
+}
+.pagination li{
+    float: left;
+    border: 1px solid #ccc;
+    padding: 5px 10px;
+    margin: 0;
+    background-color: #fff;
+}
+.pagination li a{
+    color: #555;
+    font-size: 12px;
+    vertical-align: middle;
+}
+.article{
+    margin: 10px 20px 0 0;
+    font-size: 12px;
+    color: #555;
+    border-collapse: collapse;
+    width: 100%;
+}
+.article th,td{
+    border: 1px solid #ddd;
+    background-color: #fff;
+    padding: 8px;
+    text-align: center;
+    max-width: 150px;
+    overflow: hidden;
+    -ms-text-overflow: ellipsis;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+.article .operation{
+    color: #fff;
+    border: 1px solid #ddd;
+    padding: 5px 8px;
+}
+.info{
+    background-color: #5bc0de;
+}
+.warning{
+    background-color: #f0ad4e;
+}
+.delete{
+    background-color: #d9534f;
+}
