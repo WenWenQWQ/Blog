@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Sign up << Admin</title>
+    <link rel="stylesheet" href="../static/css/signUp.css">
+</head>
+<body>
+<div class="login">
+    <div class="inOrUp">
+        <a href="/signIn">登录</a>
+    </div>
+    <div class="sign">
+        <form action="/signUp" class="login_wrap" method="post" onsubmit="return check()">
+            <input id="user" name="user" type="text" placeholder="用户名" autofocus autocomplete="off" onblur="checkUser()">
+            <p class="user"></p>
+            <input id="email" name="email" type="email" placeholder="email" onblur="checkEmail()" autocomplete="off">
+            <p class="email"></p>
+            <input id="password" name="password" type="password" placeholder="密码" onblur="checkPassword()">
+            <p class="password"></p>
+            <input id="confirm_password" name="confirm_password" type="password" placeholder="确认密码" onblur="checkSamePw()">
+            <p class="confirm_password"></p>
+            <input type="submit" value="注册" class="btn">
+        </form>
+    </div>
+</div>
+<script src="../static/vendors/jquery/jquery.js"></script>
+<script src="../static/js/signUp.js"></script>
+</body>
+</html>

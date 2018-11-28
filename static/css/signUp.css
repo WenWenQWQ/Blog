@@ -31,10 +31,16 @@ a{
 .login_wrap input{
     width: 80%;
     height: 20px;
+    margin: 15px auto 0;
     display: block;
-    margin: 15px auto;
     outline: none;
     padding: 5px;
+}
+.sign input + p{
+    width: 80%;
+    margin: 1px auto;
+    font-size: 12px;
+    color: #f10215;
 }
 .login_wrap .btn{
     width: 81%;
