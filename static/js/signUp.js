@@ -10,6 +10,7 @@ function checkUser(){
         $('.user').text(message);
         return false;
     }
+    $('.user').text("");
     return true;
 }
 function checkEmail(){
@@ -23,6 +24,7 @@ function checkEmail(){
         $('.email').text('请输入正确的邮箱');
         return false;
     }
+    $('.email').text('');
     return true;
 }
 function checkPassword(){
@@ -37,6 +39,7 @@ function checkPassword(){
         $('.password').text(message);
         return false;
     }
+    $('.password').text('');
     return true;
 }
 function checkSamePw(){
@@ -52,6 +55,7 @@ function checkSamePw(){
         $('.confirm_password').text(message);
         return false;
     }
+    $('.confirm_password').text('');
     return true;
 }
 function check(){

@@ -6,7 +6,8 @@ var AdminSchema=new mongoose.Schema({
     password:String,
     email:String,
     name:String,
-    profile:String
+    profile:String,
+    userImg:String
 });
 var Admin=mongoose.model('Admin',AdminSchema);
 module.exports=Admin;
