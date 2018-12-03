@@ -16,8 +16,8 @@
             <h1>所有文章</h1>
         </div>
         <div class="page-action">
-            <a href="#" class="delete-btn">批量删除</a>
-            <form action="#" class="form-inline">
+            <a href="#" class="delete-btn" style="display: none;">批量删除</a>
+            <form action="/add" class="form-inline" method="post">
                 <select name="" id="classification">
                     <option value="">所有分类</option>
                     <option value="">未分类</option>
@@ -50,17 +50,19 @@
             </tr>
             </thead>
             <tbody>
-            <tr>
+            <% items.forEach(function (item) {%>
+            <tr data-id="<%=item._id%>">
                 <td><input type="checkbox"></td>
-                <td>随便一个名称</td>
-                <td>小小</td>
-                <td>超科技</td>
-                <td>2016/10/07</td>
-                <td>已发布</td>
+                <td><%=item.title%></td>
+                <td><%=item.author%></td>
+                <td><%=item.category%></td>
+                <td><%=item.publishTime%></td>
+                <td><%=item.status%></td>
                 <td>
                     <a href="#" class="operation delete">删除</a>
                 </td>
             </tr>
+            <%})%>
             </tbody>
         </table>
     </div>
@@ -68,5 +70,6 @@
 <%- include('aside.ejs') -%>
 <script src="../static/vendors/jquery/jquery.js" type="text/javascript"></script>
 <script src="../static/js/index.js"></script>
+<script src="../static/js/check.js"></script>
 </body>
 </html>
