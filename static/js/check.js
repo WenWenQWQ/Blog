@@ -3,7 +3,7 @@ $(function () {
     var thCheckbox=$("th > input[type=checkbox]");
     var tdCheckbox=$("td >input[type=checkbox]");
     var checked=[];
-    console.log(tdCheckbox);
+    //console.log(tdCheckbox);
     tdCheckbox.on('change',function () {
         var id=$(this).parent().parent().data("id");
         if(!id){

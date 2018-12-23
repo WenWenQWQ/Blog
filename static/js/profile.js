@@ -1,7 +1,7 @@
 $("#avatar").on('change',function () {
     let formData = new FormData();
     formData.append('file', $(this)[0].files[0]);
-    console.log(formData.get('file'));
+    //console.log(formData.get('file'));
      /*$.post('/upload',formData,function (res) {
         // $('img').attr('src',res)
          if(res){

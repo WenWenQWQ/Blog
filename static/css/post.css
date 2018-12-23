@@ -63,6 +63,12 @@
     font-size: 12px;
     vertical-align: middle;
 }
+.pagination .active{
+    background-color: #243443;
+}
+.pagination .active > a{
+    color: #f6f6f6;
+}
 .article{
     margin: 10px 20px 0 0;
     font-size: 12px;

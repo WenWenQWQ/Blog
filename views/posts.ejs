@@ -16,25 +16,25 @@
             <h1>所有文章</h1>
         </div>
         <div class="page-action">
-            <a href="#" class="delete-btn" style="display: none;">批量删除</a>
-            <form action="/add" class="form-inline" method="post">
-                <select name="" id="classification">
-                    <option value="">所有分类</option>
-                    <option value="">未分类</option>
+            <a href="/posts" class="delete-btn" style="display: none;">批量删除</a>
+            <form class="form-inline" action="/posts" method="get">
+                <select name="category" id="classification">
+                    <option value="all">所有分类</option>
+                    <%for(var cate of categories){%>
+                    <option value="<%=cate.catename %>" <%=active.category===cate.catename? 'selected':''%>><%=cate.catename %></option>
+                    <%}%>
                 </select>
-                <select name="" id="status">
-                    <option value="">所有状态</option>
-                    <option value="">草稿</option>
-                    <option value="">已发布</option>
+                <select name="status" id="status">
+                    <option value="all">所有状态</option>
+                    <option value="drafted" <%=active.status==='drafted'?'selected':''%>>草稿</option>
+                    <option value="published" <%=active.status==='published'?'selected':''%>>已发布</option>
                 </select>
                 <button>筛选</button>
             </form>
             <ul class="pagination">
-                <li><a href="#">上一页</a></li>
-                <li><a href="#">1</a></li>
-                <li><a href="#">2</a></li>
-                <li><a href="#">3</a></li>
-                <li><a href="#">下一页</a></li>
+                <%for(var i=begin;i<=end;i++){%>
+                <li class="<%=i==activePage? 'active':''%>"><a href="/posts?page=<%=i%>"><%=i%></a></li>
+                <%}%>
             </ul>
         </div>
         <table class="article" cellspacing="0" cellpadding="8px">
@@ -59,7 +59,7 @@
                 <td><%=item.publishTime%></td>
                 <td><%=item.status%></td>
                 <td>
-                    <a href="#" class="operation delete">删除</a>
+                    <a href="/posts?id=<%=item._id%>" class="operation delete">删除</a>
                 </td>
             </tr>
             <%})%>
@@ -71,5 +71,8 @@
 <script src="../static/vendors/jquery/jquery.js" type="text/javascript"></script>
 <script src="../static/js/index.js"></script>
 <script src="../static/js/check.js"></script>
+<script src="../static/vendors/ejs/ejs.min.js"></script>
+<script src="../static/js/posts.js"></script>
+<script src="../static/js/postSubmit.js"></script>
 </body>
 </html>

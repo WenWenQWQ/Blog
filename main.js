@@ -4,6 +4,7 @@ const ejs=require('ejs');
 const bodyParser=require('body-parser');
 const Admin=require('./userModel');
 const Post=require('./postModel');
+const Comment=require('./commentModel');
 const Category=require('./categoryModel');
 const fs=require('fs');
 const path=require('path');
@@ -80,37 +81,101 @@ app.get('/',function (req,res) {
     res.render('signIn');
 });
 app.get('/posts',function (req,res) {
-    var count=0;
-    var page=1;
-    if(req.params.page){
-        page=req.params.page;
+    if(req.query.id){
+        var ids=req.query.id.split(",");
+        ids.forEach(function (id) {
+            Post.deleteOne({_id:id},function (err) {
+                if(err){
+                    console.log(id+'删除失败');
+                }else{
+                    console.log(id+'删除成功');
+                }
+            });
+        });
     }
-    var rows=20;
-    var query=Post.find({});
-    query.skip((page-1)*rows);
-    query.limit(rows);
-    query.exec(function (err,data) {
+    var page=1;
+    if(req.query.page){
+        page=parseInt(req.query.page);
+    }
+    var active={};
+    active['category']='all';
+    active['status']='all';
+    var queryTerms={};
+    if(req.query.category&&req.query.category!=='all'){
+        queryTerms['category']=req.query.category;
+        active['category']=req.query.category;
+    }
+    if(req.query.status&&req.query.status!=='all'){
+        queryTerms['status']=req.query.status;
+        active['status']=req.query.status;
+    }
+    var catedata=[];
+    Category.find(function (err,data) {
         if(err){
-            res.send(err);
+            console.log("查询分类错误");
         }else{
             //console.log(data);
-            var items=data;
-            res.render('posts',{
-                items:items,
-                id:'posts',
-                nickname:req.session.user.username,
-                name:req.session.user.name,
-                email:req.session.user.email,
-                profile:req.session.user.profile,
-                userImg:req.session.user.userImg
+            catedata=data;
+            var rows=20;
+            var query=Post.find(queryTerms);
+            query.skip((page-1)*rows);
+            query.limit(rows);
+            query.exec(function (err,data) {
+                if(err){
+                    res.send(err);
+                }else{
+                    //console.log(data);
+                    var items=data;
+                    Post.find(queryTerms,function (err,data) {
+                        var count=data.length;
+                        var pageSum=Math.ceil(count/rows);
+                        //console.log(pageSum);
+                        var begin=1;
+                        var end=1;
+                        if(pageSum<=5){
+                            end=pageSum;
+                        }else if(page<3){
+                            end=5;
+                        }else{
+                            if(page-2<1){
+                                begin=1;
+                            }else{
+                                begin=page-2;
+                            }
+                            if(page+2>pageSum){
+                                end=pageSum;
+                            }else{
+                                end=page+2;
+                            }
+                        }
+                        //console.log(begin,end);
+                        var activePage=page;
+                        res.render('posts',{
+                            activePage:activePage,
+                            begin:begin,
+                            end:end,
+                            active:active,
+                            categories:catedata,
+                            items:items,
+                            id:'posts',
+                            nickname:req.session.user.username,
+                            name:req.session.user.name,
+                            email:req.session.user.email,
+                            profile:req.session.user.profile,
+                            userImg:req.session.user.userImg
+                        });
+                    });
+                }
             });
         }
     });
-   /* for(var i=0;i<100;i++){
+    //console.log(catedata);
+
+    /*for(var i=60;i<80;i++){
         var ptitle='小小'+i;
         var pauthor='悠悠';
         var particle='加油加油'+i+'好的';
-        var pcategory='科技';
+        var pcategory='爱生活';
         var ppublishTime='2018/12/1';
         var pstatus='published';
         var pvisits=i;
@@ -136,6 +201,19 @@ app.get('/posts',function (req,res) {
     return res.send(true);*/
 });
 app.get('/categories',function (req,res) {
+    if(req.query.id){
+        var ids=req.query.id.split(',');
+        //console.log(id);
+        ids.forEach(function (id) {
+            Category.deleteOne({_id:id},function (err,data) {
+                if(err){
+                    console.log('删除失败');
+                }else{
+                    console.log('删除成功');
+                }
+            });
+        });
+    }
     Category.find(function (err,data) {
         if(err){
             console.log('查询失败');
@@ -154,7 +232,7 @@ app.get('/categories',function (req,res) {
         }
     });
 });
-app.get('/categoryDelete',function(req,res){
+/*app.get('/categoryDelete',function(req,res){
     //console.log(req.query.id);
    Category.remove({_id:req.query.id},function (err) {
        if(err){
@@ -165,6 +243,341 @@ app.get('/categoryDelete',function(req,res){
            return res.redirect('/categories');
        }
    })
+});
+app.get('/cbdelete',function (req,res) {
+    var ids=req.query.id.split(',');
+    //console.log(id);
+    ids.forEach(function (id) {
+        Category.deleteOne({_id:id},function (err,data) {
+            if(err){
+                console.log('删除失败');
+            }else{
+                console.log('删除成功');
+            }
+        });
+    });
+    return res.redirect('/categories');
+});*/
+/*app.get('/postDelete',function (req,res) {
+   var ids=req.query.id.split(",");
+   ids.forEach(function (id) {
+      Post.deleteOne({_id:id},function (err) {
+          if(err){
+              console.log(id+'删除失败');
+          }else{
+              console.log(id+'删除成功');
+          }
+      });
+   });
+   return res.redirect('/posts');
+});*/
+app.get('/admin',function (req,res) {
+    if(req.query.id){
+        var ids=req.query.id.split(',');
+        ids.forEach(function (id) {
+            Admin.remove({_id:id},function (err) {
+                if(err){
+                    console.log('删除失败');
+                }else{
+                    console.log("删除成功");
+                }
+            })
+        })
+    }
+    var obj={};
+    obj['identity']='管理员';
+    if(req.query.username){
+        obj['username']=req.query.username;
+    }
+    var page=1;
+    var rows=20;
+    if(req.query.page){
+        page=req.query.page;
+    }
+    var query=Admin.find(obj);
+    query.skip((page-1)*rows);
+    query.limit(rows);
+    query.exec(function (err,data) {
+        if(err){
+            console.log('分页错误');
+        }else{
+            var admins=data;
+            Admin.find(obj,function (err,data) {
+                var count=data.length;
+                var pageSum=Math.ceil(count/rows);
+                var activePage=page;
+                var begin=1;
+                var end=1;
+                if(pageSum<=5){
+                    end=pageSum;
+                }else if(page<3){
+                    end=5;
+                }else{
+                    if(page-2<1){
+                        begin=1;
+                    }else{
+                        begin=page-2;
+                    }
+                    if(page+2>pageSum){
+                        end=pageSum;
+                    }else{
+                        end=page+2;
+                    }
+                }
+                return res.render('admin',{
+                    begin:begin,
+                    end:end,
+                    activePage:activePage,
+                    id:'admin',
+                    admins:admins,
+                    nickname:req.session.user.username,
+                    name:req.session.user.name,
+                    email:req.session.user.email,
+                    profile:req.session.user.profile,
+                    userImg:req.session.user.userImg
+                })
+            })
+        }
+    });
+   /*Admin.find(obj,function (err,data) {
+       if(err){
+           console.log('查询错误');
+           return false;
+       }else{
+           var admins=data;
+           return res.render('admin',{
+               id:'admin',
+               admins:admins,
+               nickname:req.session.user.username,
+               name:req.session.user.name,
+               email:req.session.user.email,
+               profile:req.session.user.profile,
+               userImg:req.session.user.userImg
+           })
+       }
+   })*/
+});
+app.get('/customers',function (req,res) {
+    if(req.query.id){
+        var ids=req.query.id.split(',');
+        ids.forEach(function (id) {
+            Admin.remove({_id:id},function (err) {
+                if(err){
+                    console.log('删除失败');
+                }else{
+                    console.log("删除成功");
+                }
+            })
+        })
+    }
+    var obj={};
+    obj['identity']='用户';
+    if(req.query.username){
+        obj['username']=req.query.username;
+    }
+    var page=1;
+    var rows=20;
+    if(req.query.page){
+        page=req.query.page;
+    }
+    var query=Admin.find(obj);
+    query.skip((page-1)*rows);
+    query.limit(rows);
+    query.exec(function (err,data) {
+        if(err){
+            console.log('分页错误');
+        }else{
+            var customers=data;
+            Admin.find(obj,function (err,data) {
+                var count=data.length;
+                var pageSum=Math.ceil(count/rows);
+                var activePage=page;
+                var begin=1;
+                var end=1;
+                if(pageSum<=5){
+                    end=pageSum;
+                }else if(page<3){
+                    end=5;
+                }else{
+                    if(page-2<1){
+                        begin=1;
+                    }else{
+                        begin=page-2;
+                    }
+                    if(page+2>pageSum){
+                        end=pageSum;
+                    }else{
+                        end=page+2;
+                    }
+                }
+                return res.render('customers',{
+                    begin:begin,
+                    end:end,
+                    activePage:activePage,
+                    id:'customers',
+                    customers:customers,
+                    nickname:req.session.user.username,
+                    name:req.session.user.name,
+                    email:req.session.user.email,
+                    profile:req.session.user.profile,
+                    userImg:req.session.user.userImg
+                })
+            })
+        }
+    });
+   /* Admin.find(obj,function (err,data) {
+        if(err){
+            console.log('查询错误');
+            return false;
+        }else{
+            var admins=data;
+            return res.render('admin',{
+                id:'admin',
+                admins:admins,
+                nickname:req.session.user.username,
+                name:req.session.user.name,
+                email:req.session.user.email,
+                profile:req.session.user.profile,
+                userImg:req.session.user.userImg
+            })
+        }
+    })*/
+});
+app.get('/comments',function (req,res) {
+    if(req.query.id){
+        var ids=req.query.id.split(',');
+        ids.forEach(function (id) {
+            Comment.remove({_id:id},function (err) {
+                if(err){
+                    console.log('删除失败');
+                }else{
+                    console.log("删除成功");
+                }
+            })
+        })
+    }
+    if(req.query.statusY){
+        Comment.update({_id:req.query.statusY},{
+            status:'批准'
+        },function (err) {
+            if(err){
+                console.log('批准更新失败');
+            }else{
+                console.log('批准更新成功');
+            }
+        })
+    }
+    if(req.query.statusN){
+        Comment.update({_id:req.query.statusN},{
+            status:'驳回'
+        },function (err) {
+            if(err){
+                console.log('驳回更新失败');
+            }else{
+                console.log('驳回更新成功');
+            }
+        })
+    }
+    var obj={};
+    if(req.query.classification&&req.query.classification!=='all'){
+        obj[req.query.classification]=req.query.search;
+    }
+    var page=1;
+    if(req.query.page){
+        page=req.query.page;
+    }
+    var rows=20;
+    var query=Comment.find(obj);
+    query.skip((page-1)*rows);
+    query.limit(rows);
+    query.exec(function (err,data) {
+        if(err){
+            console.log("查询错误");
+        }else{
+            var comments=data;
+            Comment.find(obj,function (err,data) {
+                var count=data.length;
+                var pageSum=Math.ceil(count/rows);
+                //console.log(pageSum);
+                var begin=1;
+                var end=1;
+                if(pageSum<=5){
+                    end=pageSum;
+                }else if(page<3){
+                    end=5;
+                }else{
+                    if(page-2<1){
+                        begin=1;
+                    }else{
+                        begin=page-2;
+                    }
+                    if(page+2>pageSum){
+                        end=pageSum;
+                    }else{
+                        end=page+2;
+                    }
+                }
+                //console.log(begin,end);
+                var activePage=page;
+               // console.log(activePage);
+                return res.render('comments',{
+                    activePage:activePage,
+                    begin:begin,
+                    end:end,
+                    id:'comments',
+                    comments:comments,
+                    nickname:req.session.user.username,
+                    name:req.session.user.name,
+                    email:req.session.user.email,
+                    profile:req.session.user.profile,
+                    userImg:req.session.user.userImg
+                })
+            })
+        }
+    });
+   /* Comment.find(obj,function (err,data) {
+        if(err){
+            console.log('查询错误');
+            return false;
+        }else{
+            var comments=data;
+            return res.render('comments',{
+                id:'comments',
+                comments:comments,
+                nickname:req.session.user.username,
+                name:req.session.user.name,
+                email:req.session.user.email,
+                profile:req.session.user.profile,
+                userImg:req.session.user.userImg
+            })
+        }
+    })*/
+    /*for(var i=10;i<50;i++){
+       var ptitle='小小'+i;
+       var pfId='';
+       var puser='佳佳';
+       var pcontent='加油加油'+i+'好的';
+       var ptime='2018/12/1';
+       var pstatus='未批准';
+       var comment=new Comment({
+           title:ptitle,
+           fpId:pfId,
+           user:puser,
+           content:pcontent,
+           time:ptime,
+           status:pstatus
+       });
+       comment.save(function (err) {
+           if(err){
+               //console.log("插入失败");
+
+           }
+           else{
+               //console.log("插入成功");
+           }
+       });
+   }
+   return res.send(true);*/
 });
 app.get('/:index',function (req,res) {
     var id=req.params.index;
@@ -219,6 +632,7 @@ app.post('/upload', upload.single('file'), function (req, res, next) {
         }
     });
 });
+
 app.post('/category',function (req,res) {
     var category=new Category({
         catename:req.body.catename
@@ -248,7 +662,11 @@ app.post('/avatar',function (req,res) {
         if(err){
             console.log(req.get('username'));
         }else{
-            res.send(data.userImg);
+            if(data===null){
+                res.send('/static/img/default.png');
+            }else{
+                res.send(data.userImg);
+            }
         }
     });
 });
@@ -294,7 +712,8 @@ app.post('/signUp',function (req,res) {
        username:req.body.user,
        password:req.body.password,
        email:req.body.email,
-       userImg:path.join('static','img','default.png')
+       userImg:path.join('static','img','default.png'),
+       identity:'管理员'
    });
    Admin.findOne({'username':admin.username},function (err,data) {
        if(err){
@@ -308,9 +727,9 @@ app.post('/signUp',function (req,res) {
            admin.save(function (err) {
                if(err){
                    console.log(err);
-                   return res.redirect('/signIn');
                }
                console.log('注册成功');
+               return res.redirect('/signIn');
            })
        }
    })
