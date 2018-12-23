@@ -80,7 +80,7 @@ app.use(session({
 app.get('/',function (req,res) {
     res.render('signIn');
 });
-app.get('/posts',function (req,res) {
+app.get('/posts',checkLogin,function (req,res) {
     if(req.query.id){
         var ids=req.query.id.split(",");
         ids.forEach(function (id) {
@@ -200,7 +200,7 @@ app.get('/posts',function (req,res) {
     }
     return res.send(true);*/
 });
-app.get('/categories',function (req,res) {
+app.get('/categories',checkLogin,function (req,res) {
     if(req.query.id){
         var ids=req.query.id.split(',');
         //console.log(id);
@@ -271,7 +271,7 @@ app.get('/cbdelete',function (req,res) {
    });
    return res.redirect('/posts');
 });*/
-app.get('/admin',function (req,res) {
+app.get('/admin',checkLogin,function (req,res) {
     if(req.query.id){
         var ids=req.query.id.split(',');
         ids.forEach(function (id) {
@@ -357,7 +357,7 @@ app.get('/admin',function (req,res) {
        }
    })*/
 });
-app.get('/customers',function (req,res) {
+app.get('/customers',checkLogin,function (req,res) {
     if(req.query.id){
         var ids=req.query.id.split(',');
         ids.forEach(function (id) {
@@ -443,7 +443,7 @@ app.get('/customers',function (req,res) {
         }
     })*/
 });
-app.get('/comments',function (req,res) {
+app.get('/comments',checkLogin,function (req,res) {
     if(req.query.id){
         var ids=req.query.id.split(',');
         ids.forEach(function (id) {
@@ -633,7 +633,7 @@ app.post('/upload', upload.single('file'), function (req, res, next) {
     });
 });
 
-app.post('/category',function (req,res) {
+app.post('/category',checkLogin,function (req,res) {
     var category=new Category({
         catename:req.body.catename
     });
@@ -670,7 +670,7 @@ app.post('/avatar',function (req,res) {
         }
     });
 });
-app.post('/passwordRest',function(req,res){
+app.post('/passwordRest',checkLogin,function(req,res){
     Admin.update({'_id':req.session.user._id,'password':req.body.oldword},{
         password:req.body.newword
     },function(err,data){
@@ -686,7 +686,7 @@ app.post('/passwordRest',function(req,res){
         }
     })
 });
-app.post('/profile',function (req,res) {
+app.post('/profile',checkLogin,function (req,res) {
     Admin.findByIdAndUpdate(req.session.user._id,{
         username:req.body.nickname,
         email:req.body.email,
@@ -755,3 +755,9 @@ app.post('/signIn',function (req,res) {
 app.listen(config.port,function () {
     console.log("http://localhost:8080")
 });
+function checkLogin(req,res,next){
+    if(!req.session.user){
+        return res.redirect('/signIn');
+    }
+    next();
+}
