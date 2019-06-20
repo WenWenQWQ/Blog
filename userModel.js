@@ -10,5 +10,6 @@ var AdminSchema=new mongoose.Schema({
     userImg:String,
     identity:String
 });
+//文档名字，
 var Admin=mongoose.model('Admin',AdminSchema);
 module.exports=Admin;

@@ -579,6 +579,17 @@ app.get('/comments',checkLogin,function (req,res) {
    }
    return res.send(true);*/
 });
+app.get('/data/admin',function (req,res) {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header('Access-Control-Allow-Methods', 'PUT, GET, POST, DELETE, OPTIONS');
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    res.header('Access-Control-Allow-Headers', 'Content-Type');
+    Admin.find({
+        "identity":"管理员"
+    },function (err,data) {
+        return res.send(data);
+    })
+});
 app.get('/:index',function (req,res) {
     var id=req.params.index;
     if(id==='favicon.ico'){
